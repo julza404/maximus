@@ -14,6 +14,7 @@ export default async function TopicsPage() {
   const { data } = await supabase
     .from('topics')
     .select('*')
+    .eq('is_public', true)
     .order('name')
 
   const topics = (data ?? []) as unknown as Topic[]

@@ -26,6 +26,25 @@ function ColorPicker({ value, onChange }: { value: string; onChange: (c: string)
   )
 }
 
+function VisibilityToggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-[#8892a4]">Visibility</span>
+      <button
+        type="button"
+        onClick={() => onChange(!value)}
+        className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+          value
+            ? 'bg-green-500/10 text-green-400 border border-green-500/30'
+            : 'bg-[#1e2130] text-[#4a5568] border border-[#1e2130]'
+        }`}
+      >
+        {value ? 'Public' : 'Private'}
+      </button>
+    </div>
+  )
+}
+
 export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -36,12 +55,14 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [color, setColor] = useState(COLORS[0])
+  const [isPublic, setIsPublic] = useState(true)
   const [createError, setCreateError] = useState<string | null>(null)
 
   // Edit form state
   const [editName, setEditName] = useState('')
   const [editDescription, setEditDescription] = useState('')
   const [editColor, setEditColor] = useState(COLORS[0])
+  const [editIsPublic, setEditIsPublic] = useState(true)
 
   function slugify(text: string) {
     return text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')
@@ -52,6 +73,7 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
     setEditName(topic.name)
     setEditDescription(topic.description ?? '')
     setEditColor(topic.color ?? COLORS[0])
+    setEditIsPublic(topic.is_public)
   }
 
   function cancelEditing() {
@@ -67,7 +89,7 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
       const supabase = createClient()
       const { data, error } = await supabase
         .from('topics')
-        .insert({ name: name.trim(), slug: slugify(name), description: description.trim() || null, color })
+        .insert({ name: name.trim(), slug: slugify(name), description: description.trim() || null, color, is_public: isPublic })
         .select()
         .single()
 
@@ -75,6 +97,7 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
       setTopics((prev) => [...prev, data as unknown as Topic].sort((a, b) => a.name.localeCompare(b.name)))
       setName('')
       setDescription('')
+      setIsPublic(true)
       router.refresh()
     })
   }
@@ -84,7 +107,7 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
       const supabase = createClient()
       const { data, error } = await supabase
         .from('topics')
-        .update({ name: editName.trim(), description: editDescription.trim() || null, color: editColor })
+        .update({ name: editName.trim(), description: editDescription.trim() || null, color: editColor, is_public: editIsPublic })
         .eq('id', id)
         .select()
         .single()
@@ -127,6 +150,7 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
             className="w-full rounded-lg border border-[#1e2130] bg-[#0f1117] px-3 py-2 text-sm text-[#f0f2f8] placeholder-[#4a5568] outline-none focus:border-[#7c3aed] transition-colors"
           />
           <ColorPicker value={color} onChange={setColor} />
+          <VisibilityToggle value={isPublic} onChange={setIsPublic} />
         </div>
         {createError && <p className="text-sm text-red-400">{createError}</p>}
         <button
@@ -144,7 +168,6 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
           {topics.map((topic, i) => (
             <div key={topic.id} className={i !== 0 ? 'border-t border-[#1e2130]' : ''}>
               {editingId === topic.id ? (
-                /* Edit mode */
                 <div className="px-5 py-4 space-y-3 bg-[#13151f]">
                   <input
                     type="text"
@@ -160,6 +183,7 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
                     className="w-full rounded-lg border border-[#1e2130] bg-[#0f1117] px-3 py-2 text-sm text-[#f0f2f8] placeholder-[#4a5568] outline-none focus:border-[#7c3aed] transition-colors"
                   />
                   <ColorPicker value={editColor} onChange={setEditColor} />
+                  <VisibilityToggle value={editIsPublic} onChange={setEditIsPublic} />
                   <div className="flex items-center gap-2 pt-1">
                     <button
                       onClick={() => handleSaveEdit(topic.id)}
@@ -177,12 +201,20 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
                   </div>
                 </div>
               ) : (
-                /* View mode */
                 <div className="flex items-center justify-between px-5 py-4 gap-4 hover:bg-[#13151f] transition-colors">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: topic.color ?? '#7c3aed' }} />
                     <div className="min-w-0">
-                      <p className="text-[#f0f2f8] text-sm font-medium">{topic.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-[#f0f2f8] text-sm font-medium">{topic.name}</p>
+                        <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                          topic.is_public
+                            ? 'bg-green-500/10 text-green-400'
+                            : 'bg-[#1e2130] text-[#4a5568]'
+                        }`}>
+                          {topic.is_public ? 'Public' : 'Private'}
+                        </span>
+                      </div>
                       {topic.description && (
                         <p className="text-xs text-[#4a5568] truncate">{topic.description}</p>
                       )}

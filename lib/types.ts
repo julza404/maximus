@@ -10,6 +10,7 @@ export interface Database {
           slug: string
           description: string | null
           color: string | null
+          is_public: boolean
           created_at: string
         }
         Insert: {
@@ -18,6 +19,7 @@ export interface Database {
           slug: string
           description?: string | null
           color?: string | null
+          is_public?: boolean
           created_at?: string
         }
         Update: {
@@ -26,6 +28,7 @@ export interface Database {
           slug?: string
           description?: string | null
           color?: string | null
+          is_public?: boolean
           created_at?: string
         }
         Relationships: []

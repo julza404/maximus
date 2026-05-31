@@ -40,6 +40,7 @@ export default async function TopicPage({ params }: Props) {
     .from('topics')
     .select('*')
     .eq('slug', slug)
+    .eq('is_public', true)
     .single()
 
   if (!topicData) notFound()
