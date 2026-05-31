@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Background radial glow centered at prism -->
+    <radialGradient id="bgGlow7" cx="50%" cy="34%" r="45%">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.55"/>
+      <stop offset="40%" stop-color="#4a3fcc" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#0a0d14" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Facet gradients (same palette as iteration-2) -->
+    <linearGradient id="i7-facetTopCapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a89fff"/>
+      <stop offset="100%" stop-color="#6c63ff"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetTopRightOuterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#4338ca"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetBotRightOuterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a3fcc"/>
+      <stop offset="100%" stop-color="#3730a3"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetBotOuterGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5b21b6"/>
+      <stop offset="100%" stop-color="#3730a3"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetBotLeftOuterGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6d28d9"/>
+      <stop offset="100%" stop-color="#4338ca"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetTopLeftOuterGrad" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#9333ea"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetTopRightInnerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8a84ee"/>
+      <stop offset="100%" stop-color="#6c63ff"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetBotRightInnerGrad" x1="0%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#5550cc"/>
+      <stop offset="100%" stop-color="#4a3fcc"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetBotInnerGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7e22ce"/>
+      <stop offset="100%" stop-color="#5b21b6"/>
+    </linearGradient>
+
+    <linearGradient id="i7-facetBotLeftInnerGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a21caf"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+
+    <!-- Teal accent facet -->
+    <linearGradient id="i7-facetTealAccentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00d4aa"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+
+    <radialGradient id="i7-facetCenterGrad" cx="40%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#a89fff"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#4a3fcc"/>
+    </radialGradient>
+
+    <linearGradient id="i7-facetTopLeftInnerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a89fff"/>
+      <stop offset="100%" stop-color="#8a84ee"/>
+    </linearGradient>
+
+    <!-- Wordmark gradient: left-to-right, light purple to teal -->
+    <linearGradient id="i7-wordmarkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#00d4aa"/>
+    </linearGradient>
+
+    <!-- Text glow filter -->
+    <filter id="i7-textGlow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0a0d14"/>
+
+  <!-- Radial purple glow ellipse at prism center -->
+  <ellipse cx="256" cy="175" rx="150" ry="130" fill="url(#bgGlow7)"/>
+
+  <!-- ================================ -->
+  <!-- SCALED PRISM (center: 256,175)  -->
+  <!-- Outer hex: r~85                 -->
+  <!-- Top:256,90  TR:330,133          -->
+  <!-- BR:330,217  Bot:256,260         -->
+  <!-- BL:182,217  TL:182,133          -->
+  <!-- Inner hex: r~43                 -->
+  <!-- Top:256,132  TR:299,154         -->
+  <!-- BR:299,196  Bot:256,218         -->
+  <!-- BL:213,196  TL:213,154          -->
+  <!-- Center:256,175                  -->
+  <!-- ================================ -->
+
+  <!-- Top cap: outer top → TR → inner TR → inner top → inner TL → outer TL -->
+  <polygon points="256,90 330,133 299,154 256,132 213,154 182,133"
+    fill="url(#i7-facetTopCapGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Top-right outer: outer TR → outer BR → inner BR → inner TR -->
+  <polygon points="330,133 330,217 299,196 299,154"
+    fill="url(#i7-facetTopRightOuterGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Bottom-right outer: outer BR → outer Bot → inner Bot → inner BR -->
+  <polygon points="330,217 256,260 256,218 299,196"
+    fill="url(#i7-facetBotRightOuterGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Bottom outer: outer Bot → outer BL → inner BL → inner Bot -->
+  <polygon points="256,260 182,217 213,196 256,218"
+    fill="url(#i7-facetBotOuterGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Bottom-left outer: outer BL → outer TL → inner TL → inner BL -->
+  <polygon points="182,217 182,133 213,154 213,196"
+    fill="url(#i7-facetBotLeftOuterGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Top-left outer: outer TL → outer top → inner top → inner TL -->
+  <polygon points="182,133 256,90 256,132 213,154"
+    fill="url(#i7-facetTopLeftOuterGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Inner top-right: inner top → inner TR → center -->
+  <polygon points="256,132 299,154 256,175"
+    fill="url(#i7-facetTopRightInnerGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Inner right (TEAL ACCENT): inner TR → inner BR → center -->
+  <polygon points="299,154 299,196 256,175"
+    fill="url(#i7-facetTealAccentGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Inner bottom-right: inner BR → inner Bot → center -->
+  <polygon points="299,196 256,218 256,175"
+    fill="url(#i7-facetBotRightInnerGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Inner bottom-left: inner Bot → inner BL → center -->
+  <polygon points="256,218 213,196 256,175"
+    fill="url(#i7-facetBotInnerGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Inner left: inner BL → inner TL → center -->
+  <polygon points="213,196 213,154 256,175"
+    fill="url(#i7-facetBotLeftInnerGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Inner top-left (highlight): inner TL → inner top → center -->
+  <polygon points="213,154 256,132 256,175"
+    fill="url(#i7-facetTopLeftInnerGrad)" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Inner hex soft overlay -->
+  <polygon points="256,132 299,154 299,196 256,218 213,196 213,154"
+    fill="url(#i7-facetCenterGrad)" stroke="none" opacity="0.15"/>
+
+  <!-- Outer hex outline -->
+  <polygon points="256,90 330,133 330,217 256,260 182,217 182,133"
+    fill="none" stroke="#0a0d14" stroke-width="1.2"/>
+
+  <!-- Inner hex outline -->
+  <polygon points="256,132 299,154 299,196 256,218 213,196 213,154"
+    fill="none" stroke="#0a0d14" stroke-width="1"/>
+
+  <!-- Separator line -->
+  <line x1="100" y1="300" x2="412" y2="300"
+    stroke="#6c63ff" stroke-width="1" opacity="0.3"/>
+
+  <!-- Wordmark glow layer (blurred copy behind main text) -->
+  <text
+    x="256"
+    y="380"
+    text-anchor="middle"
+    font-family="'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif"
+    font-size="62"
+    font-weight="900"
+    letter-spacing="1"
+    fill="#6c63ff"
+    filter="url(#i7-textGlow)"
+  >Julza404</text>
+
+  <!-- Wordmark main -->
+  <text
+    x="256"
+    y="380"
+    text-anchor="middle"
+    font-family="'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif"
+    font-size="62"
+    font-weight="900"
+    letter-spacing="1"
+    fill="url(#i7-wordmarkGrad)"
+  >Julza404</text>
+</svg>
