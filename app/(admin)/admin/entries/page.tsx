@@ -8,6 +8,7 @@ type EntryRow = {
   is_public: boolean
   published_at: string | null
   created_at: string
+  updated_at: string
   topics: { name: string; slug: string } | null
 }
 
@@ -16,7 +17,7 @@ export default async function AdminEntriesPage() {
 
   const { data } = await supabase
     .from('entries')
-    .select('id, title, slug, is_public, published_at, created_at, topics!entries_topic_id_fkey(name, slug)')
+    .select('id, title, slug, is_public, published_at, created_at, updated_at, topics!entries_topic_id_fkey(name, slug)')
     .order('created_at', { ascending: false })
 
   const entries = (data ?? []) as unknown as EntryRow[]
@@ -61,9 +62,12 @@ export default async function AdminEntriesPage() {
                 <p className="text-[#f0f2f8] text-sm font-medium truncate">{entry.title}</p>
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <time className="text-xs text-[#4a5568]">
-                  {new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </time>
+                <div className="text-right text-xs text-[#4a5568]">
+                  <p>{new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                  {entry.updated_at !== entry.created_at && (
+                    <p className="text-[#4a5568]/60">edited {new Date(entry.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                  )}
+                </div>
                 <Link
                   href={`/admin/entries/${entry.id}/edit`}
                   className="text-sm text-[#8892a4] hover:text-[#f0f2f8] transition-colors px-2 py-1 rounded hover:bg-[#1e2130]"

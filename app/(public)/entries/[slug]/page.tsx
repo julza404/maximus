@@ -14,8 +14,19 @@ type EntryRow = {
   slug: string
   content: Json
   published_at: string
+  updated_at: string
   topics: TopicRef | null
   entry_topics: { topics: TopicRef | null }[]
+}
+
+function readingTime(content: Json): number {
+  try {
+    const text = JSON.stringify(content).replace(/"type":"[^"]+"/g, '').replace(/[^a-zA-Z\s]/g, ' ')
+    const words = text.trim().split(/\s+/).filter(Boolean).length
+    return Math.max(1, Math.round(words / 200))
+  } catch {
+    return 1
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -52,6 +63,11 @@ export default async function EntryPage({ params }: Props) {
     ?.map((et) => et.topics)
     .filter(Boolean) as TopicRef[]
 
+  const mins = readingTime(entry.content)
+  const publishedDate = new Date(entry.published_at)
+  const updatedDate = new Date(entry.updated_at)
+  const wasEdited = updatedDate.getTime() - publishedDate.getTime() > 60 * 60 * 1000
+
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
       <div className="mb-6">
@@ -86,11 +102,23 @@ export default async function EntryPage({ params }: Props) {
             {entry.title}
           </h1>
 
-          <time className="mt-4 block text-sm text-[#4a5568]">
-            {new Date(entry.published_at).toLocaleDateString('en-US', {
-              weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
-            })}
-          </time>
+          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-[#4a5568]">
+            <time dateTime={entry.published_at}>
+              {publishedDate.toLocaleDateString('en-US', {
+                weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+              })}
+            </time>
+            <span>·</span>
+            <span>{mins} min read</span>
+            {wasEdited && (
+              <>
+                <span>·</span>
+                <span title={updatedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}>
+                  Updated {updatedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </span>
+              </>
+            )}
+          </div>
         </header>
 
         <div className="border-t border-[#1e2130] pt-10">
