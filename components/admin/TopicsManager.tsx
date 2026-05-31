@@ -7,23 +7,61 @@ import type { Topic } from '@/lib/types'
 
 const COLORS = ['#7c3aed', '#2563eb', '#059669', '#d97706', '#dc2626', '#db2777', '#0891b2']
 
+function ColorPicker({ value, onChange }: { value: string; onChange: (c: string) => void }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-[#8892a4]">Color</span>
+      <div className="flex gap-1.5">
+        {COLORS.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => onChange(c)}
+            className={`w-5 h-5 rounded-full transition-transform ${value === c ? 'scale-125 ring-2 ring-white/30' : ''}`}
+            style={{ backgroundColor: c }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [topics, setTopics] = useState(initialTopics)
+  const [editingId, setEditingId] = useState<string | null>(null)
+
+  // Create form state
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [color, setColor] = useState(COLORS[0])
-  const [error, setError] = useState<string | null>(null)
+  const [createError, setCreateError] = useState<string | null>(null)
+
+  // Edit form state
+  const [editName, setEditName] = useState('')
+  const [editDescription, setEditDescription] = useState('')
+  const [editColor, setEditColor] = useState(COLORS[0])
 
   function slugify(text: string) {
     return text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')
   }
 
+  function startEditing(topic: Topic) {
+    setEditingId(topic.id)
+    setEditName(topic.name)
+    setEditDescription(topic.description ?? '')
+    setEditColor(topic.color ?? COLORS[0])
+  }
+
+  function cancelEditing() {
+    setEditingId(null)
+  }
+
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) return
-    setError(null)
+    setCreateError(null)
 
     startTransition(async () => {
       const supabase = createClient()
@@ -33,10 +71,27 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
         .select()
         .single()
 
-      if (error) { setError(error.message); return }
-      setTopics((prev) => [...prev, data].sort((a, b) => a.name.localeCompare(b.name)))
+      if (error) { setCreateError(error.message); return }
+      setTopics((prev) => [...prev, data as unknown as Topic].sort((a, b) => a.name.localeCompare(b.name)))
       setName('')
       setDescription('')
+      router.refresh()
+    })
+  }
+
+  async function handleSaveEdit(id: string) {
+    startTransition(async () => {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('topics')
+        .update({ name: editName.trim(), description: editDescription.trim() || null, color: editColor })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error || !data) return
+      setTopics((prev) => prev.map((t) => t.id === id ? data as unknown as Topic : t))
+      setEditingId(null)
       router.refresh()
     })
   }
@@ -71,22 +126,9 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
             placeholder="Description (optional)"
             className="w-full rounded-lg border border-[#1e2130] bg-[#0f1117] px-3 py-2 text-sm text-[#f0f2f8] placeholder-[#4a5568] outline-none focus:border-[#7c3aed] transition-colors"
           />
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-[#8892a4]">Color</span>
-            <div className="flex gap-1.5">
-              {COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setColor(c)}
-                  className={`w-5 h-5 rounded-full transition-transform ${color === c ? 'scale-125 ring-2 ring-white/30' : ''}`}
-                  style={{ backgroundColor: c }}
-                />
-              ))}
-            </div>
-          </div>
+          <ColorPicker value={color} onChange={setColor} />
         </div>
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {createError && <p className="text-sm text-red-400">{createError}</p>}
         <button
           type="submit"
           disabled={isPending || !name.trim()}
@@ -100,28 +142,70 @@ export function TopicsManager({ initialTopics }: { initialTopics: Topic[] }) {
       {topics.length > 0 && (
         <div className="rounded-xl border border-[#1e2130] overflow-hidden">
           {topics.map((topic, i) => (
-            <div
-              key={topic.id}
-              className={`flex items-center justify-between px-5 py-4 gap-4 hover:bg-[#13151f] transition-colors ${
-                i !== 0 ? 'border-t border-[#1e2130]' : ''
-              }`}
-            >
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: topic.color ?? '#7c3aed' }} />
-                <div className="min-w-0">
-                  <p className="text-[#f0f2f8] text-sm font-medium">{topic.name}</p>
-                  {topic.description && (
-                    <p className="text-xs text-[#4a5568] truncate">{topic.description}</p>
-                  )}
+            <div key={topic.id} className={i !== 0 ? 'border-t border-[#1e2130]' : ''}>
+              {editingId === topic.id ? (
+                /* Edit mode */
+                <div className="px-5 py-4 space-y-3 bg-[#13151f]">
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="w-full rounded-lg border border-[#1e2130] bg-[#0f1117] px-3 py-2 text-sm text-[#f0f2f8] outline-none focus:border-[#7c3aed] transition-colors"
+                  />
+                  <input
+                    type="text"
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    placeholder="Description (optional)"
+                    className="w-full rounded-lg border border-[#1e2130] bg-[#0f1117] px-3 py-2 text-sm text-[#f0f2f8] placeholder-[#4a5568] outline-none focus:border-[#7c3aed] transition-colors"
+                  />
+                  <ColorPicker value={editColor} onChange={setEditColor} />
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      onClick={() => handleSaveEdit(topic.id)}
+                      disabled={isPending || !editName.trim()}
+                      className="px-3 py-1.5 rounded-lg bg-[#7c3aed] text-xs font-medium text-white hover:bg-[#6d28d9] disabled:opacity-60 transition-colors"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={cancelEditing}
+                      className="px-3 py-1.5 rounded-lg border border-[#1e2130] text-xs text-[#8892a4] hover:text-[#f0f2f8] transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <button
-                onClick={() => handleDelete(topic.id)}
-                disabled={isPending}
-                className="text-xs text-[#4a5568] hover:text-red-400 transition-colors"
-              >
-                Delete
-              </button>
+              ) : (
+                /* View mode */
+                <div className="flex items-center justify-between px-5 py-4 gap-4 hover:bg-[#13151f] transition-colors">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: topic.color ?? '#7c3aed' }} />
+                    <div className="min-w-0">
+                      <p className="text-[#f0f2f8] text-sm font-medium">{topic.name}</p>
+                      {topic.description && (
+                        <p className="text-xs text-[#4a5568] truncate">{topic.description}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <button
+                      onClick={() => startEditing(topic)}
+                      disabled={isPending}
+                      className="text-xs text-[#8892a4] hover:text-[#f0f2f8] transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(topic.id)}
+                      disabled={isPending}
+                      className="text-xs text-[#4a5568] hover:text-red-400 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
