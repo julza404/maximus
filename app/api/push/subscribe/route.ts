@@ -9,8 +9,7 @@ export async function POST(request: Request) {
 
   const subscription = await request.json()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('push_subscriptions')
     .insert({ subscription })
 

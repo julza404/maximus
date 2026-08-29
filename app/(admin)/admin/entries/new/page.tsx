@@ -7,7 +7,7 @@ export default async function NewEntryPage() {
 
   return (
     <div className="p-8 max-w-4xl">
-      <h1 className="text-2xl font-bold text-[#f0f2f8] mb-8">New entry</h1>
+      <h1 className="text-2xl font-bold text-[var(--text)] mb-8">New entry</h1>
       <EntryForm topics={topics ?? []} />
     </div>
   )

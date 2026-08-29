@@ -10,7 +10,7 @@ export default async function AdminRemindersPage() {
 
   return (
     <div className="p-8 max-w-2xl">
-      <h1 className="text-2xl font-bold text-[#f0f2f8] mb-8">Reminders</h1>
+      <h1 className="text-2xl font-bold text-[var(--text)] mb-8">Reminders</h1>
       <RemindersManager initialReminders={reminders ?? []} />
     </div>
   )

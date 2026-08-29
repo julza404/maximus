@@ -1,7 +1,9 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import type { Topic } from '@/lib/types'
 import type { Metadata } from 'next'
+
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Topics',
@@ -9,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function TopicsPage() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const { data } = await supabase
     .from('topics')
@@ -22,8 +24,8 @@ export default async function TopicsPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
       <div className="mb-14">
-        <h1 className="text-4xl font-bold text-[#f0f2f8] tracking-tight">Topics</h1>
-        <p className="mt-3 text-lg text-[#8892a4]">Browse entries by subject.</p>
+        <h1 className="text-4xl font-bold text-[var(--text)] tracking-tight">Topics</h1>
+        <p className="mt-3 text-lg text-[var(--text-2)]">Browse entries by subject.</p>
       </div>
 
       {topics.length > 0 ? (
@@ -32,17 +34,17 @@ export default async function TopicsPage() {
             <Link
               key={topic.id}
               href={`/topics/${topic.slug}`}
-              className="group rounded-xl border border-[#1e2130] bg-[#13151f] p-6 hover:border-[#7c3aed]/50 transition-all"
+              className="group rounded-xl border border-[var(--border-c)] bg-[var(--surface)] p-6 hover:border-[#7c3aed]/50 transition-all"
             >
               <div
                 className="w-3 h-3 rounded-full mb-3"
                 style={{ backgroundColor: topic.color ?? '#7c3aed' }}
               />
-              <h2 className="text-[#f0f2f8] font-semibold group-hover:text-[#a855f7] transition-colors">
+              <h2 className="text-[var(--text)] font-semibold group-hover:text-[#a855f7] transition-colors">
                 {topic.name}
               </h2>
               {topic.description && (
-                <p className="mt-1.5 text-sm text-[#8892a4] leading-relaxed line-clamp-2">
+                <p className="mt-1.5 text-sm text-[var(--text-2)] leading-relaxed line-clamp-2">
                   {topic.description}
                 </p>
               )}
@@ -50,7 +52,7 @@ export default async function TopicsPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 text-[#4a5568]">
+        <div className="text-center py-24 text-[var(--text-3)]">
           <p className="text-lg">No topics yet.</p>
         </div>
       )}

@@ -18,8 +18,7 @@ export async function GET(request: Request) {
     process.env.VAPID_PRIVATE_KEY!
   )
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = await createClient() as any
+  const supabase = await createClient()
 
   const { data: dueReminders } = await supabase
     .from('reminders')
@@ -36,7 +35,7 @@ export async function GET(request: Request) {
   let sent = 0
 
   for (const reminder of dueReminders as Reminder[]) {
-    for (const { subscription } of (subscriptions ?? []) as { subscription: webpushTypes.PushSubscription }[]) {
+    for (const { subscription } of (subscriptions ?? []) as unknown as { subscription: webpushTypes.PushSubscription }[]) {
       try {
         await webpush.sendNotification(
           subscription,

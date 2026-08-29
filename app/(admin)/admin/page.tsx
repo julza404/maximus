@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboard() {
   const supabase = await createClient()
 
@@ -24,10 +26,10 @@ export default async function AdminDashboard() {
   ]
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#f0f2f8]">Dashboard</h1>
-        <p className="mt-1 text-sm text-[#8892a4]">Welcome back, Julian.</p>
+        <h1 className="text-2xl font-bold text-[var(--text)]">Dashboard</h1>
+        <p className="mt-1 text-sm text-[var(--text-2)]">Welcome back, Julian.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -35,10 +37,10 @@ export default async function AdminDashboard() {
           <Link
             key={stat.label}
             href={stat.href}
-            className="rounded-xl border border-[#1e2130] bg-[#13151f] p-5 hover:border-[#7c3aed]/50 transition-colors"
+            className="rounded-xl border border-[var(--border-c)] bg-[var(--surface)] p-5 hover:border-[#7c3aed]/50 transition-colors"
           >
-            <div className="text-3xl font-bold text-[#f0f2f8]">{stat.value}</div>
-            <div className="mt-1 text-sm text-[#8892a4]">{stat.label}</div>
+            <div className="text-3xl font-bold text-[var(--text)]">{stat.value}</div>
+            <div className="mt-1 text-sm text-[var(--text-2)]">{stat.label}</div>
           </Link>
         ))}
       </div>

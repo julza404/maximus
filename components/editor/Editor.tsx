@@ -12,7 +12,7 @@ interface EditorProps {
   onChange: (content: Json) => void
 }
 
-const toolbarButton = 'px-2 py-1 rounded text-sm text-[#8892a4] hover:text-[#f0f2f8] hover:bg-[#1e2130] transition-colors disabled:opacity-40'
+const toolbarButton = 'px-2 py-1 rounded text-sm text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--border-c)] transition-colors disabled:opacity-40'
 const activeButton = 'bg-[#7c3aed]/20 text-[#a855f7]'
 
 export function Editor({ content, onChange }: EditorProps) {
@@ -45,9 +45,9 @@ export function Editor({ content, onChange }: EditorProps) {
   }
 
   return (
-    <div className="rounded-xl border border-[#1e2130] bg-[#13151f] overflow-hidden">
+    <div className="rounded-xl border border-[var(--border-c)] bg-[var(--surface)] overflow-hidden">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-[#1e2130]">
+      <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-[var(--border-c)]">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -64,7 +64,7 @@ export function Editor({ content, onChange }: EditorProps) {
         >
           <em>I</em>
         </button>
-        <div className="w-px h-4 bg-[#1e2130] mx-1" />
+        <div className="w-px h-4 bg-[var(--border-c)] mx-1" />
         {([1, 2, 3] as const).map((level) => (
           <button
             key={level}
@@ -76,7 +76,7 @@ export function Editor({ content, onChange }: EditorProps) {
             H{level}
           </button>
         ))}
-        <div className="w-px h-4 bg-[#1e2130] mx-1" />
+        <div className="w-px h-4 bg-[var(--border-c)] mx-1" />
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -122,7 +122,7 @@ export function Editor({ content, onChange }: EditorProps) {
             <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
           </svg>
         </button>
-        <div className="w-px h-4 bg-[#1e2130] mx-1" />
+        <div className="w-px h-4 bg-[var(--border-c)] mx-1" />
         <button
           type="button"
           onClick={addLink}

@@ -89,27 +89,27 @@ export function RemindersManager({ initialReminders }: { initialReminders: Remin
   return (
     <div className="space-y-8">
       {/* Create form */}
-      <form onSubmit={handleCreate} className="rounded-xl border border-[#1e2130] bg-[#13151f] p-5 space-y-3">
-        <h2 className="text-sm font-medium text-[#8892a4]">New reminder</h2>
+      <form onSubmit={handleCreate} className="rounded-xl border border-[var(--border-c)] bg-[var(--surface)] p-5 space-y-3">
+        <h2 className="text-sm font-medium text-[var(--text-2)]">New reminder</h2>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Reminder title"
-          className="w-full rounded-lg border border-[#1e2130] bg-[#0f1117] px-3 py-2 text-sm text-[#f0f2f8] placeholder-[#4a5568] outline-none focus:border-[#7c3aed] transition-colors"
+          className="w-full rounded-lg border border-[var(--border-c)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text)] placeholder-[var(--text-3)] outline-none focus:border-[#7c3aed] transition-colors"
         />
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Note (optional)"
           rows={2}
-          className="w-full rounded-lg border border-[#1e2130] bg-[#0f1117] px-3 py-2 text-sm text-[#f0f2f8] placeholder-[#4a5568] outline-none focus:border-[#7c3aed] transition-colors resize-none"
+          className="w-full rounded-lg border border-[var(--border-c)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text)] placeholder-[var(--text-3)] outline-none focus:border-[#7c3aed] transition-colors resize-none"
         />
         <input
           type="datetime-local"
           value={remindAt}
           onChange={(e) => setRemindAt(e.target.value)}
-          className="w-full rounded-lg border border-[#1e2130] bg-[#0f1117] px-3 py-2 text-sm text-[#f0f2f8] outline-none focus:border-[#7c3aed] transition-colors"
+          className="w-full rounded-lg border border-[var(--border-c)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[#7c3aed] transition-colors"
         />
         {error && <p className="text-sm text-red-400">{error}</p>}
         <button
@@ -120,25 +120,25 @@ export function RemindersManager({ initialReminders }: { initialReminders: Remin
           Create reminder
         </button>
         {pushSupported && (
-          <p className="text-xs text-[#4a5568]">Push notifications enabled for this browser.</p>
+          <p className="text-xs text-[var(--text-3)]">Push notifications enabled for this browser.</p>
         )}
       </form>
 
       {/* Pending reminders */}
       {pending.length > 0 && (
         <div>
-          <h2 className="text-sm font-medium text-[#8892a4] mb-3">Upcoming</h2>
-          <div className="rounded-xl border border-[#1e2130] overflow-hidden">
+          <h2 className="text-sm font-medium text-[var(--text-2)] mb-3">Upcoming</h2>
+          <div className="rounded-xl border border-[var(--border-c)] overflow-hidden">
             {pending.map((r, i) => (
               <div
                 key={r.id}
                 className={`flex items-start justify-between px-5 py-4 gap-4 ${
-                  i !== 0 ? 'border-t border-[#1e2130]' : ''
+                  i !== 0 ? 'border-t border-[var(--border-c)]' : ''
                 }`}
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-[#f0f2f8] text-sm font-medium">{r.title}</p>
-                  {r.note && <p className="text-xs text-[#4a5568] mt-0.5">{r.note}</p>}
+                  <p className="text-[var(--text)] text-sm font-medium">{r.title}</p>
+                  {r.note && <p className="text-xs text-[var(--text-3)] mt-0.5">{r.note}</p>}
                   <time className="text-xs text-[#7c3aed] mt-1 block">
                     {new Date(r.remind_at).toLocaleString('en-US', {
                       weekday: 'short', month: 'short', day: 'numeric',
@@ -157,7 +157,7 @@ export function RemindersManager({ initialReminders }: { initialReminders: Remin
                   <button
                     onClick={() => handleDelete(r.id)}
                     disabled={isPending}
-                    className="text-xs text-[#4a5568] hover:text-red-400 transition-colors"
+                    className="text-xs text-[var(--text-3)] hover:text-red-400 transition-colors"
                   >
                     Delete
                   </button>
@@ -171,20 +171,20 @@ export function RemindersManager({ initialReminders }: { initialReminders: Remin
       {/* Completed */}
       {done.length > 0 && (
         <div>
-          <h2 className="text-sm font-medium text-[#4a5568] mb-3">Completed</h2>
-          <div className="rounded-xl border border-[#1e2130] overflow-hidden opacity-50">
+          <h2 className="text-sm font-medium text-[var(--text-3)] mb-3">Completed</h2>
+          <div className="rounded-xl border border-[var(--border-c)] overflow-hidden opacity-50">
             {done.slice(0, 5).map((r, i) => (
               <div
                 key={r.id}
                 className={`flex items-center justify-between px-5 py-3 gap-4 ${
-                  i !== 0 ? 'border-t border-[#1e2130]' : ''
+                  i !== 0 ? 'border-t border-[var(--border-c)]' : ''
                 }`}
               >
-                <p className="text-[#4a5568] text-sm line-through">{r.title}</p>
+                <p className="text-[var(--text-3)] text-sm line-through">{r.title}</p>
                 <button
                   onClick={() => handleDelete(r.id)}
                   disabled={isPending}
-                  className="text-xs text-[#4a5568] hover:text-red-400 transition-colors"
+                  className="text-xs text-[var(--text-3)] hover:text-red-400 transition-colors"
                 >
                   Delete
                 </button>
@@ -195,7 +195,7 @@ export function RemindersManager({ initialReminders }: { initialReminders: Remin
       )}
 
       {reminders.length === 0 && (
-        <p className="text-sm text-[#4a5568]">No reminders yet.</p>
+        <p className="text-sm text-[var(--text-3)]">No reminders yet.</p>
       )}
     </div>
   )

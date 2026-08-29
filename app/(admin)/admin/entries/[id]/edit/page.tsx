@@ -46,8 +46,8 @@ export default async function EditEntryPage({ params }: Props) {
   return (
     <div className="p-8 max-w-4xl">
       <div className="flex items-start justify-between mb-8">
-        <h1 className="text-2xl font-bold text-[#f0f2f8]">Edit entry</h1>
-        <div className="text-right text-xs text-[#4a5568] space-y-1">
+        <h1 className="text-2xl font-bold text-[var(--text)]">Edit entry</h1>
+        <div className="text-right text-xs text-[var(--text-3)] space-y-1">
           <p>Created {fmt(entry.created_at)}</p>
           <p>Last edited {fmt(entry.updated_at)}</p>
         </div>

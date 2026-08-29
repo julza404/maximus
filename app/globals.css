@@ -1,143 +1,140 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: #0f1117;
-  --color-surface: #13151f;
-  --color-border: #1e2130;
-  --color-text-primary: #f0f2f8;
-  --color-text-secondary: #8892a4;
-  --color-text-muted: #4a5568;
-  --color-accent: #7c3aed;
+/* ── Theme tokens ───────────────────────────────────────────────── */
+
+/* Dark (night) — default */
+:root {
+  --bg:       #0f1117;
+  --surface:  #13151f;
+  --border-c: #1e2130;
+  --text:     #f0f2f8;
+  --text-2:   #8892a4;
+  --text-3:   #4a5568;
+}
+
+/* Light (day) */
+[data-theme="light"] {
+  --bg:       #ffffff;
+  --surface:  #f5f6fa;
+  --border-c: #e2e8f0;
+  --text:     #0f1117;
+  --text-2:   #64748b;
+  --text-3:   #94a3b8;
+}
+
+/* Smooth transition when theme switches */
+*, *::before, *::after {
+  transition: background-color 0.4s ease, border-color 0.4s ease, color 0.2s ease;
+}
+
+/* ── Tailwind theme ─────────────────────────────────────────────── */
+
+@theme {
+  --color-background: var(--bg);
+  --color-surface:    var(--surface);
+  --color-border:     var(--border-c);
+  --color-text-primary:   var(--text);
+  --color-text-secondary: var(--text-2);
+  --color-text-muted:     var(--text-3);
+  --color-accent:       #7c3aed;
   --color-accent-light: #a855f7;
-  --color-accent-glow: #7c3aed33;
+  --color-accent-hover: #6d28d9;
+  --color-accent-glow:  #7c3aed33;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-* {
-  box-sizing: border-box;
-}
+/* ── Base ───────────────────────────────────────────────────────── */
+
+* { box-sizing: border-box; }
 
 html {
-  background: #0f1117;
-  color: #f0f2f8;
+  background: var(--bg);
+  color: var(--text);
   scroll-behavior: smooth;
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-text-primary);
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Tiptap editor prose styles */
+/* ── Tiptap prose ───────────────────────────────────────────────── */
+
 .prose-maximus {
   max-width: 65ch;
   line-height: 1.8;
-  color: var(--color-text-primary);
+  color: var(--text);
 }
-
 .prose-maximus h1 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  color: var(--color-text-primary);
+  font-size: 1.875rem; font-weight: 700;
+  margin-top: 2rem; margin-bottom: 1rem;
+  color: var(--text);
 }
-
 .prose-maximus h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
-  color: var(--color-text-primary);
+  font-size: 1.5rem; font-weight: 600;
+  margin-top: 1.75rem; margin-bottom: 0.75rem;
+  color: var(--text);
 }
-
 .prose-maximus h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--color-text-primary);
+  font-size: 1.25rem; font-weight: 600;
+  margin-top: 1.5rem; margin-bottom: 0.5rem;
+  color: var(--text);
 }
-
-.prose-maximus p {
-  margin-bottom: 1.25rem;
-}
-
+.prose-maximus p { margin-bottom: 1.25rem; }
 .prose-maximus a {
-  color: var(--color-accent-light);
+  color: #a855f7;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-
-.prose-maximus a:hover {
-  color: #c084fc;
-}
-
+.prose-maximus a:hover { color: #c084fc; }
 .prose-maximus ul, .prose-maximus ol {
-  margin-bottom: 1.25rem;
-  padding-left: 1.5rem;
+  margin-bottom: 1.25rem; padding-left: 1.5rem;
 }
-
-.prose-maximus li {
-  margin-bottom: 0.375rem;
-}
-
+.prose-maximus li { margin-bottom: 0.375rem; }
 .prose-maximus blockquote {
-  border-left: 3px solid var(--color-accent);
+  border-left: 3px solid #7c3aed;
   padding-left: 1rem;
-  color: var(--color-text-secondary);
+  color: var(--text-2);
   font-style: italic;
   margin: 1.5rem 0;
 }
-
 .prose-maximus code {
   font-family: var(--font-mono), monospace;
   font-size: 0.875rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--surface);
+  border: 1px solid var(--border-c);
   border-radius: 0.25rem;
   padding: 0.125rem 0.375rem;
   color: #c084fc;
 }
-
 .prose-maximus pre {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--surface);
+  border: 1px solid var(--border-c);
   border-radius: 0.5rem;
   padding: 1rem;
   overflow-x: auto;
   margin-bottom: 1.25rem;
 }
-
 .prose-maximus pre code {
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--color-text-primary);
+  background: none; border: none; padding: 0;
+  color: var(--text);
 }
-
 .prose-maximus iframe {
-  width: 100%;
-  aspect-ratio: 16/9;
+  width: 100%; aspect-ratio: 16/9;
   border-radius: 0.5rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-c);
   margin: 1.5rem 0;
 }
 
-/* Tiptap editor styles */
-.ProseMirror {
-  outline: none;
-  min-height: 400px;
-}
+/* ── Tiptap editor ──────────────────────────────────────────────── */
 
+.ProseMirror { outline: none; min-height: 400px; }
 .ProseMirror p.is-editor-empty:first-child::before {
-  color: var(--color-text-muted);
+  color: var(--text-3);
   content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  pointer-events: none;
+  float: left; height: 0; pointer-events: none;
 }

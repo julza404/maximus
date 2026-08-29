@@ -1,8 +1,11 @@
+import { cache } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import type { Topic } from '@/lib/types'
 import type { Metadata } from 'next'
+
+export const revalidate = 3600
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -14,18 +17,21 @@ type EntryRow = {
   topic_id: string | null
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const supabase = await createClient()
+const getTopic = cache(async (slug: string) => {
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('topics')
-    .select('name, description')
+    .select('*')
     .eq('slug', slug)
+    .eq('is_public', true)
     .single()
+  return data as unknown as Topic | null
+})
 
-  const topic = data as unknown as Pick<Topic, 'name' | 'description'> | null
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const topic = await getTopic(slug)
   if (!topic) return { title: 'Topic not found' }
-
   return {
     title: topic.name,
     description: topic.description ?? `Entries in ${topic.name}`,
@@ -34,17 +40,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TopicPage({ params }: Props) {
   const { slug } = await params
-  const supabase = await createClient()
+  const topic = await getTopic(slug)
+  if (!topic) notFound()
 
-  const { data: topicData } = await supabase
-    .from('topics')
-    .select('*')
-    .eq('slug', slug)
-    .eq('is_public', true)
-    .single()
-
-  if (!topicData) notFound()
-  const topic = topicData as unknown as Topic
+  const supabase = createPublicClient()
 
   // Primary entries (this is the main topic)
   const { data: primaryData } = await supabase
@@ -84,7 +83,7 @@ export default async function TopicPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
       <div className="mb-3">
-        <Link href="/topics" className="text-sm text-[#4a5568] hover:text-[#8892a4] transition-colors">
+        <Link href="/topics" className="text-sm text-[var(--text-3)] hover:text-[var(--text-2)] transition-colors">
           ← Topics
         </Link>
       </div>
@@ -94,11 +93,11 @@ export default async function TopicPage({ params }: Props) {
           className="w-4 h-4 rounded-full"
           style={{ backgroundColor: topic.color ?? '#7c3aed' }}
         />
-        <h1 className="text-4xl font-bold text-[#f0f2f8] tracking-tight">{topic.name}</h1>
+        <h1 className="text-4xl font-bold text-[var(--text)] tracking-tight">{topic.name}</h1>
       </div>
 
       {topic.description && (
-        <p className="mb-10 text-[#8892a4] leading-relaxed max-w-2xl">{topic.description}</p>
+        <p className="mb-10 text-[var(--text-2)] leading-relaxed max-w-2xl">{topic.description}</p>
       )}
 
       {entries.length > 0 ? (
@@ -107,17 +106,17 @@ export default async function TopicPage({ params }: Props) {
             <article key={entry.id}>
               <Link
                 href={`/entries/${entry.slug}`}
-                className="group flex items-start justify-between gap-6 rounded-xl px-4 py-5 -mx-4 hover:bg-[#13151f] transition-colors"
+                className="group flex items-start justify-between gap-6 rounded-xl px-4 py-5 -mx-4 hover:bg-[var(--surface)] transition-colors"
               >
                 <div className="flex-1 min-w-0">
                   {entry.topic_id !== topic.id && (
-                    <span className="text-xs text-[#4a5568] mb-1 block">cross-reference</span>
+                    <span className="text-xs text-[var(--text-3)] mb-1 block">cross-reference</span>
                   )}
-                  <h2 className="text-[#f0f2f8] font-medium group-hover:text-[#a855f7] transition-colors leading-snug">
+                  <h2 className="text-[var(--text)] font-medium group-hover:text-[#a855f7] transition-colors leading-snug">
                     {entry.title}
                   </h2>
                 </div>
-                <time className="shrink-0 text-sm text-[#4a5568] mt-0.5">
+                <time className="shrink-0 text-sm text-[var(--text-3)] mt-0.5">
                   {new Date(entry.published_at).toLocaleDateString('en-US', {
                     month: 'short', day: 'numeric', year: 'numeric',
                   })}
@@ -127,7 +126,7 @@ export default async function TopicPage({ params }: Props) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 text-[#4a5568]">
+        <div className="text-center py-24 text-[var(--text-3)]">
           <p className="text-lg">No entries in this topic yet.</p>
         </div>
       )}

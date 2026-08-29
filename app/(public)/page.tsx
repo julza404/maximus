@@ -1,6 +1,8 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import type { Metadata } from 'next'
+
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Maximus',
@@ -17,7 +19,7 @@ type EntryRow = {
 }
 
 export default async function HomePage() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const { data } = await supabase
     .from('entries')
@@ -32,8 +34,8 @@ export default async function HomePage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
       <div className="mb-14">
-        <h1 className="text-4xl font-bold text-[#f0f2f8] tracking-tight">Journal</h1>
-        <p className="mt-3 text-lg text-[#8892a4]">Ideas, growth, and perspective.</p>
+        <h1 className="text-4xl font-bold text-[var(--text)] tracking-tight">Journal</h1>
+        <p className="mt-3 text-lg text-[var(--text-2)]">Ideas, growth, and perspective.</p>
       </div>
 
       {entries.length > 0 ? (
@@ -42,7 +44,7 @@ export default async function HomePage() {
             <article key={entry.id}>
               <Link
                 href={`/entries/${entry.slug}`}
-                className="group flex items-start justify-between gap-6 rounded-xl px-4 py-5 -mx-4 hover:bg-[#13151f] transition-colors"
+                className="group flex items-start justify-between gap-6 rounded-xl px-4 py-5 -mx-4 hover:bg-[var(--surface)] transition-colors"
               >
                 <div className="flex-1 min-w-0">
                   {entry.topics && (
@@ -52,11 +54,11 @@ export default async function HomePage() {
                       </span>
                     </div>
                   )}
-                  <h2 className="text-[#f0f2f8] font-medium group-hover:text-[#a855f7] transition-colors leading-snug">
+                  <h2 className="text-[var(--text)] font-medium group-hover:text-[#a855f7] transition-colors leading-snug">
                     {entry.title}
                   </h2>
                 </div>
-                <time className="shrink-0 text-sm text-[#4a5568] mt-0.5">
+                <time className="shrink-0 text-sm text-[var(--text-3)] mt-0.5">
                   {new Date(entry.published_at!).toLocaleDateString('en-US', {
                     month: 'short', day: 'numeric', year: 'numeric',
                   })}
@@ -66,7 +68,7 @@ export default async function HomePage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 text-[#4a5568]">
+        <div className="text-center py-24 text-[var(--text-3)]">
           <p className="text-lg">No entries yet.</p>
           <p className="mt-1 text-sm">Check back soon.</p>
         </div>

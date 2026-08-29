@@ -4,20 +4,12 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Editor } from './Editor'
 import { createClient } from '@/lib/supabase/client'
+import { slugify } from '@/lib/utils'
 import type { Topic, Entry, Json } from '@/lib/types'
 
 interface EntryFormProps {
   topics: Topic[]
   entry?: Entry & { crossRefTopicIds: string[] }
-}
-
-function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
 }
 
 export function EntryForm({ topics, entry }: EntryFormProps) {
@@ -106,30 +98,30 @@ export function EntryForm({ topics, entry }: EntryFormProps) {
           value={title}
           onChange={(e) => handleTitleChange(e.target.value)}
           placeholder="Entry title"
-          className="w-full bg-transparent text-2xl font-bold text-[#f0f2f8] placeholder-[#4a5568] outline-none border-b border-[#1e2130] pb-3 focus:border-[#7c3aed] transition-colors"
+          className="w-full bg-transparent text-2xl font-bold text-[var(--text)] placeholder-[var(--text-3)] outline-none border-b border-[var(--border-c)] pb-3 focus:border-[#7c3aed] transition-colors"
         />
       </div>
 
       {/* Slug */}
       <div className="flex items-center gap-2">
-        <span className="text-sm text-[#4a5568]">/entries/</span>
+        <span className="text-sm text-[var(--text-3)]">/entries/</span>
         <input
           type="text"
           value={slug}
           onChange={(e) => setSlug(slugify(e.target.value))}
           placeholder="entry-slug"
-          className="flex-1 rounded-lg border border-[#1e2130] bg-[#13151f] px-3 py-1.5 text-sm text-[#8892a4] outline-none focus:border-[#7c3aed] transition-colors font-mono"
+          className="flex-1 rounded-lg border border-[var(--border-c)] bg-[var(--surface)] px-3 py-1.5 text-sm text-[var(--text-2)] outline-none focus:border-[#7c3aed] transition-colors font-mono"
         />
       </div>
 
       {/* Topic + visibility */}
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <label className="text-sm text-[#8892a4]">Topic</label>
+          <label className="text-sm text-[var(--text-2)]">Topic</label>
           <select
             value={topicId}
             onChange={(e) => setTopicId(e.target.value)}
-            className="rounded-lg border border-[#1e2130] bg-[#13151f] px-3 py-1.5 text-sm text-[#f0f2f8] outline-none focus:border-[#7c3aed] transition-colors"
+            className="rounded-lg border border-[var(--border-c)] bg-[var(--surface)] px-3 py-1.5 text-sm text-[var(--text)] outline-none focus:border-[#7c3aed] transition-colors"
           >
             <option value="">None</option>
             {topics.map((t) => (
@@ -139,14 +131,14 @@ export function EntryForm({ topics, entry }: EntryFormProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="text-sm text-[#8892a4]">Visibility</label>
+          <label className="text-sm text-[var(--text-2)]">Visibility</label>
           <button
             type="button"
             onClick={() => setIsPublic((v) => !v)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               isPublic
                 ? 'bg-green-500/10 text-green-400 border border-green-500/30'
-                : 'bg-[#13151f] text-[#4a5568] border border-[#1e2130]'
+                : 'bg-[var(--surface)] text-[var(--text-3)] border border-[var(--border-c)]'
             }`}
           >
             {isPublic ? 'Public' : 'Private'}
@@ -157,7 +149,7 @@ export function EntryForm({ topics, entry }: EntryFormProps) {
       {/* Cross-references */}
       {availableCrossRefs.length > 0 && (
         <div>
-          <p className="text-sm text-[#8892a4] mb-2">Also appears in</p>
+          <p className="text-sm text-[var(--text-2)] mb-2">Also appears in</p>
           <div className="flex flex-wrap gap-2">
             {availableCrossRefs.map((t) => (
               <button
@@ -167,7 +159,7 @@ export function EntryForm({ topics, entry }: EntryFormProps) {
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                   crossRefIds.includes(t.id)
                     ? 'bg-[#7c3aed]/20 text-[#a855f7] border border-[#7c3aed]/40'
-                    : 'bg-[#13151f] text-[#4a5568] border border-[#1e2130] hover:text-[#8892a4]'
+                    : 'bg-[var(--surface)] text-[var(--text-3)] border border-[var(--border-c)] hover:text-[var(--text-2)]'
                 }`}
               >
                 {t.name}
@@ -189,13 +181,13 @@ export function EntryForm({ topics, entry }: EntryFormProps) {
             type="button"
             onClick={() => handleSave(false)}
             disabled={isPending}
-            className="px-4 py-2 rounded-lg border border-[#1e2130] text-sm text-[#8892a4] hover:text-[#f0f2f8] hover:bg-[#13151f] disabled:opacity-60 transition-colors"
+            className="px-4 py-2 rounded-lg border border-[var(--border-c)] text-sm text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface)] disabled:opacity-60 transition-colors"
           >
             Save draft
           </button>
           <button
             type="button"
-            onClick={() => handleSave(true)}
+            onClick={() => handleSave(isPublic)}
             disabled={isPending}
             className="px-4 py-2 rounded-lg bg-[#7c3aed] text-sm font-medium text-white hover:bg-[#6d28d9] disabled:opacity-60 transition-colors"
           >

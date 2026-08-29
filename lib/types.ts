@@ -134,6 +134,41 @@ export interface Database {
         }
         Relationships: []
       }
+      tasks: {
+        Row: {
+          id: string
+          title: string
+          notes: string | null
+          topic_id: string | null
+          is_done: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          notes?: string | null
+          topic_id?: string | null
+          is_done?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          notes?: string | null
+          topic_id?: string | null
+          is_done?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'tasks_topic_id_fkey'
+            columns: ['topic_id']
+            isOneToOne: false
+            referencedRelation: 'topics'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       push_subscriptions: {
         Row: {
           id: string
@@ -164,3 +199,4 @@ export type Topic = Database['public']['Tables']['topics']['Row']
 export type Entry = Database['public']['Tables']['entries']['Row']
 export type EntryTopic = Database['public']['Tables']['entry_topics']['Row']
 export type Reminder = Database['public']['Tables']['reminders']['Row']
+export type Task = Database['public']['Tables']['tasks']['Row']
