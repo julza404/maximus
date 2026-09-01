@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { ShareEntryButton } from '@/components/admin/ShareEntryButton'
 
 type EntryRow = {
   id: string
@@ -82,6 +83,7 @@ export default async function AdminEntriesPage() {
                 >
                   View
                 </Link>
+                {entry.is_public && <ShareEntryButton slug={entry.slug} />}
                 <Link
                   href={`/admin/entries/${entry.id}/edit`}
                   className="text-sm text-[var(--text-2)] hover:text-[var(--text)] transition-colors px-2 py-1 rounded hover:bg-[var(--border-c)]"
